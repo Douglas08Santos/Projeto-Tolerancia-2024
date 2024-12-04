@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 def seek_product(product_id):
     # Request para Store, via get
-    response = requests.get('http://localhost:5001/product', params={"product": product_id})
+    response = requests.get('http://localhost:5001/product', params={'product': product_id})
 
     #Verificação se o produto foi encontrado
     if response.status_code == 200: #OK
@@ -16,7 +16,7 @@ def seek_product(product_id):
     
 
 def get_exchange():
-    response = requests.get('http://localhost:5003/exchange')
+    response = requests.get('http://localhost:5002/exchange')
 
     if response.status_code == 200:
         return response.json()['exchange_rate']
@@ -24,18 +24,28 @@ def get_exchange():
         return None
 
 def make_purchase(product_id):
-    response = requests.post('http://localhost:5001/sell', json={"product": product_id})
+    response = requests.post('http://localhost:5001/sell', json={'product': product_id})
 
     if response.status_code == 200:
-        return response.json()["transaction_id"]
+        return response.json()['transaction_id']
+    else: 
+        return None
+    
+def send_bonus(user_id, bonus):
+    response = requests.post('http://localhost:5003/bonus', json={"user": user_id, "bonus":bonus})
+    if response.status_code == 200:
+        return response.json()['bonus']
     else: 
         return None
 
-@app.route('/buy', methods=['GET'])
+
+@app.route('/buy', methods=['POST'])
 def buy():
-    product_id = request.args.get("product")
+    data = request.json
+    product_id = data.get("product")
+    user_id = data.get("user")
     
-    
+    print(product_id, user_id)
     '''
         Requisição nº1 - Product
             O E-commerce envia um request para o Store, via GET para o
@@ -67,17 +77,29 @@ def buy():
                 representa essa venda.
         '''
         transaction_id = make_purchase(product_id)
+
+        '''
+            Request 4:
+                O E-commerce envia um request para o Fidelity, via POST para o endpoint /bonus, com os seguintes parâmetros:
+                    - user – id do usuário que está executando a compra
+                    - bonus – um valor inteiro mais próximo do valor do
+                    produto antes da conversão
+                A resposta deve indicar o sucesso da operação (HTTP Responde Code).
+        '''
+        bonus = send_bonus(user_id, product_data['value'])
+        
         return jsonify({
-            "status": "success",
-            "product":product_data,
-            "exchange_rate": exchange_rate,
-            "exchange_value": product_exchange_value,
-            "transaction_id": transaction_id
+            'status': 'success',
+            'product':product_data,
+            'exchange_rate': exchange_rate,
+            'exchange_value': product_exchange_value,
+            'transaction_id': transaction_id,
+            'bonus': bonus
         }), 200
     else:
         return jsonify({
-            "status":"error",
-            "message": "Product not found"
+            'status':'error',
+            'message': 'Product not found'
         }), 404
 
 if __name__== '__main__':
