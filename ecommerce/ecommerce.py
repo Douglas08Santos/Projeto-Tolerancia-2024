@@ -13,11 +13,18 @@ def seek_product(product_id):
         return response.json()
     else:
         return None
+    
+
+def get_exchange():
+    response = requests.get('http://localhost:5003/exchange')
+
+    return response.json()['exchange_rate']
 
 @app.route('/buy', methods=['GET'])
 def buy():
     product_id = request.args.get("product")
-    print(product_id)
+    
+    
     '''
         Requisição nº1 - Product
             O E-commerce envia um request para o Store, via GET para o
@@ -29,9 +36,21 @@ def buy():
     product_data = seek_product(product_id)
 
     if product_data:
+        #Calcular o preço convertido
+        '''
+            Request 2:
+                O E-commerce envia um request para o Exchange, via GET para o
+                endpoint /exchange, sem parâmetros. 
+                A resposta deve ser um número real positivo que indica a taxa de conversão da moeda.       
+        '''
+        exchange_rate = get_exchange()
+        product_exchange_value = round(product_data['value']/exchange_rate, 2)
+        
         return jsonify({
             "status": "success",
-            "product":product_data
+            "product":product_data,
+            "exchange_rate": exchange_rate,
+            "exchange_value": product_exchange_value
         }), 200
     else:
         return jsonify({
