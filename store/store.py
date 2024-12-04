@@ -24,6 +24,20 @@ def get_product():
     else:
         return jsonify({'status': 'error', 'message':'Product not found'}), 404
     
+@app.route('/sell', methods=['POST'])
+def sell():
+    data = request.json
+    product_id = data.get('product')
+
+    # Verificação ser o product_id não é nulo e se ele existe
+    # TODO: Será que precisa verificar 2 vezes??
+    if product_id and int(product_id) in products:
+        #Gera um id para a transação de compra
+        transaction_id = str(uuid.uuid4())
+        return jsonify({'transaction_id': transaction_id})
+    else:
+        return jsonify({'status': 'error', 'message': 'Product not found'})
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)

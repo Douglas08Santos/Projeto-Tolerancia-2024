@@ -18,7 +18,18 @@ def seek_product(product_id):
 def get_exchange():
     response = requests.get('http://localhost:5003/exchange')
 
-    return response.json()['exchange_rate']
+    if response.status_code == 200:
+        return response.json()['exchange_rate']
+    else:
+        return None
+
+def make_purchase(product_id):
+    response = requests.post('http://localhost:5001/sell', json={"product": product_id})
+
+    if response.status_code == 200:
+        return response.json()["transaction_id"]
+    else: 
+        return None
 
 @app.route('/buy', methods=['GET'])
 def buy():
@@ -41,16 +52,27 @@ def buy():
             Request 2:
                 O E-commerce envia um request para o Exchange, via GET para o
                 endpoint /exchange, sem parâmetros. 
-                A resposta deve ser um número real positivo que indica a taxa de conversão da moeda.       
+                A resposta deve ser um número real positivo que indica a taxa
+                de conversão da moeda.       
         '''
         exchange_rate = get_exchange()
         product_exchange_value = round(product_data['value']/exchange_rate, 2)
         
+        '''
+            Request 3:
+                O E-commerce envia um request para o Store, via POST para o
+                endpoint /sell, com os seguintes parâmetros:
+                    - product – id do produto a ser comprado
+                A resposta deve conter um id único da transação (gerado automaticamente) que
+                representa essa venda.
+        '''
+        transaction_id = make_purchase(product_id)
         return jsonify({
             "status": "success",
             "product":product_data,
             "exchange_rate": exchange_rate,
-            "exchange_value": product_exchange_value
+            "exchange_value": product_exchange_value,
+            "transaction_id": transaction_id
         }), 200
     else:
         return jsonify({
