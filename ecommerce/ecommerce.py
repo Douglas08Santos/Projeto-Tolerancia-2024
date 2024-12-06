@@ -66,7 +66,7 @@ def buy():
                 de conversão da moeda.       
         '''
         exchange_rate = get_exchange()
-        product_exchange_value = round(product_data['value']/exchange_rate, 2)
+        product_exchange_value = round(product_data['value']*exchange_rate, 2) # Converte para BRL
         
         '''
             Request 3:

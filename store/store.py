@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 # Exemplos de produtos do estoque
 products = {
-    1:{'id':1, 'name':'Product A', 'value': 100.0},
+    1:{'id':1, 'name':'Product A', 'value': 100.0}, # Value USD
     2:{'id':2, 'name':'Product B', 'value': 200.0}, 
     3:{'id':3, 'name':'Product C', 'value': 300.0}  
 }
