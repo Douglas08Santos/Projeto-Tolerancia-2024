@@ -16,15 +16,19 @@ def seek_product(product_id):
         return None
     
 def get_exchange():
-    response = requests.get('http://localhost:5002/exchange')
-
-    if response.status_code == 200:
-        data = response.json()
+    try:
+        response = requests.get('http://localhost:5002/exchange') # colocar num try-catch
         global latest_usd_exchange_rate
-        latest_usd_exchange_rate = data['exchange_rate']
-        return latest_usd_exchange_rate
-    else:
-        return None
+
+        if response.status_code == 200:
+            data = response.json()
+            latest_usd_exchange_rate = data['exchange_rate']
+            return latest_usd_exchange_rate
+        else:
+            return latest_usd_exchange_rate
+        # implementar um catch para tratar a exceção (log)
+    finally:
+            return latest_usd_exchange_rate
 
 def make_purchase(product_id):
     response = requests.post('http://localhost:5001/sell', json={'product': product_id})
@@ -106,4 +110,5 @@ def buy():
         }), 404
 
 if __name__== '__main__':
-    app.run(host='0.0.0.0', port=5050)
+    #app.run(host='0.0.0.0', port=5050)
+    print(get_exchange())
