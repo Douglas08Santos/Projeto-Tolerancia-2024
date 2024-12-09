@@ -110,5 +110,4 @@ def buy():
         }), 404
 
 if __name__== '__main__':
-    #app.run(host='0.0.0.0', port=5050)
-    print(get_exchange())
+    app.run(host='0.0.0.0', port=5050)

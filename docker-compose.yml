@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  ecommerce:
+    build: ./ecommerce
+    container_name: ecommerce
+    ports:
+      - "5050:5050"
+    depends_on:
+      - exchange
+      - store
+      - fidelity
+
+  exchange:
+    build: ./exchange
+    container_name: exchange
+    ports:
+      - "5002:5002"
+
+  fidelity:
+    build: ./fidelity
+    container_name: fidelity
+    ports:
+      - "5003:5003"
+
+  store:
+    build: ./store
+    container_name: store
+    ports:
+      - "5001:5001"

@@ -1,5 +1,4 @@
 from flask import Flask, jsonify
-import random
 import requests
 
 EXCHANGE_RATE_API_KEY = '07509480328ffa2422cd1b75'
