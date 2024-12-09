@@ -3,6 +3,7 @@ import requests
 
 app = Flask(__name__)
 
+latest_usd_exchange_rate = 1.0
 
 def seek_product(product_id):
     # Request para Store, via get
@@ -14,12 +15,14 @@ def seek_product(product_id):
     else:
         return None
     
-
 def get_exchange():
     response = requests.get('http://localhost:5002/exchange')
 
     if response.status_code == 200:
-        return response.json()['exchange_rate']
+        data = response.json()
+        global latest_usd_exchange_rate
+        latest_usd_exchange_rate = data['exchange_rate']
+        return latest_usd_exchange_rate
     else:
         return None
 
@@ -103,4 +106,4 @@ def buy():
         }), 404
 
 if __name__== '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5050)
