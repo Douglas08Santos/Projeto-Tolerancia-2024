@@ -7,15 +7,28 @@ services:
     ports:
       - "5050:5050"
     depends_on:
-      - exchange
+      - exchange1
+      - exchange2
       - store
       - fidelity
 
-  exchange:
-    build: ./exchange
-    container_name: exchange
+  store:
+    build: ./store
+    container_name: store
     ports:
-      - "5002:5002"
+      - "5001:5001"
+
+  exchange1:
+    build: ./exchange
+    container_name: exchange1
+    ports:
+      - "5011:5002"
+  
+  exchange2:
+    build: ./exchange
+    container_name: exchange2
+    ports:
+      - "5012:5002"
 
   fidelity:
     build: ./fidelity
@@ -23,8 +36,4 @@ services:
     ports:
       - "5003:5003"
 
-  store:
-    build: ./store
-    container_name: store
-    ports:
-      - "5001:5001"
+  

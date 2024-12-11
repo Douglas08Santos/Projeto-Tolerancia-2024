@@ -13,7 +13,6 @@ def buy():
     user_id = data.get("user")
     ft = data.get("ft")
 
-    print(product_id, user_id, ft)
     # ft = 0 - Fault Tolerante is OFF
     # ft != 0 - Fault Tolerance is ON
     if ft != 0:
@@ -37,8 +36,7 @@ def buy():
                     de conversão da moeda.       
             '''
             exchange_rate = ft_get_exchange()
-            product_exchange_value = round(product_data['value']*exchange_rate, 2) # Converte para BRL
-            
+            product_exchange_value = round(float(product_data['value'])*exchange_rate, 2) # Converte para BRL
             '''
                 Request 3:
                     O E-commerce envia um request para o Store, via POST para o

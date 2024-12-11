@@ -14,12 +14,10 @@ products = {
 def get_product():
     # Captura do parâmetros enviado pelo request
     product_id = request.args.get('product')
-    print(product_id)
 
     #Validação ser o id é valido e se existe na lista de produtos
     if product_id and int(product_id) in products:
         product = products[int(product_id)]
-        print(product)
         return jsonify(product), 200
     else:
         return jsonify({'status': 'error', 'message':'Product not found'}), 404
