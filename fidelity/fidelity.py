@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
+server_bonus = {}
+
 @app.route('/bonus', methods=['POST'])
 def add_bonus():
     data = request.json
@@ -10,17 +12,27 @@ def add_bonus():
 
     if user_id and bonus:
         #Simulação de bonus
-        #TODO: poderia usar uma cache para guardar os bonus??
+        if user_id in server_bonus.keys():
+            server_bonus[user_id] += bonus
+        else:
+            server_bonus[user_id] = 0
+            server_bonus[user_id] += bonus
+        
         return jsonify({
             'status': 'success',
             'message': 'Bonus of {} = {}'.format(user_id, bonus),
-            'bonus': bonus
+            'bonus': bonus,
+            'amount_bonus': server_bonus[user_id]
         }), 200
     else:
         return jsonify({
             'status': 'error',
             'message': 'Invalid request'
         }), 400
+    
+@app.route('/show', methods=['GET'])
+def show_bonus():
+    return jsonify(server_bonus)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5003)

@@ -74,6 +74,7 @@ def buy():
         send_bonus = ft_send_bonus(user_id, product_data['value'])
         if send_bonus['status_code'] == 200:
             bonus = send_bonus['bonus']
+            amount_bonus = send_bonus['amount_bonus']
         else:
             return jsonify({
                 'status':'error',
@@ -86,7 +87,8 @@ def buy():
             'exchange_rate': exchange_rate,
             'exchange_value': product_exchange_value,
             'transaction_id': transaction_id,
-            'bonus': bonus
+            'bonus': bonus,
+            'amount_bonus': amount_bonus
         }), 200
     else:
         # No Fault Tolerance

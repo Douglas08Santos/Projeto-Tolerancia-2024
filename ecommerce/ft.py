@@ -67,11 +67,10 @@ def ft_make_purchase(product_id):
         response = requests.post('http://store:5001/sell', json={'product': product_id})
 
         if response.status_code == 200:
-            transaction_id = response.json('transaction_id')
             return {
-                'transaction_id': transaction_id,
+                'transaction_id': response.json()['transaction_id'],
                 'status_code': response.status_code
-            }, 
+            } #, #Ta de sacanagem kkkkkkkkkkkkkk
         else: 
             return {
                 'message': response.json()['message'],
@@ -91,6 +90,7 @@ def ft_send_bonus(user_id, bonus):
             return {
                 'message': response.json()['message'],
                 'bonus': response.json()['bonus'],
+                'amount_bonus': response.json()['amount_bonus'],
                 'status_code': response.status_code
             }  
         else: 
@@ -99,7 +99,7 @@ def ft_send_bonus(user_id, bonus):
                 'status_code': response.status_code
             }
     except Exception as e:
-        pub_message({"user": user_id, "bonus":bonus})
+        #pub_message({"user": user_id, "bonus":bonus})
         return {
             'message': 'Failed to send bonus, added to queue',
             'status_code': 503
