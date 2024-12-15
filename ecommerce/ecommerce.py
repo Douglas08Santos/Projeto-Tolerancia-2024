@@ -1,3 +1,5 @@
+from itertools import product
+from math import prod
 from flask import Flask, request, jsonify
 
 from ft import ft_get_exchange, ft_make_purchase, ft_seek_product, ft_send_bonus
@@ -24,52 +26,68 @@ def buy():
                 A resposta deve ser um json com os dados do produto consultado e
                 deve ter as seguintes informações: id, name, value
         '''
-        product_data = ft_seek_product(product_id)
-
-        if product_data:
-            #Calcular o preço convertido
-            '''
-                Request 2:
-                    O E-commerce envia um request para o Exchange, via GET para o
-                    endpoint /exchange, sem parâmetros. 
-                    A resposta deve ser um número real positivo que indica a taxa
-                    de conversão da moeda.       
-            '''
-            exchange_rate = ft_get_exchange()
-            product_exchange_value = round(float(product_data['value'])*exchange_rate, 2) # Converte para BRL
-            '''
-                Request 3:
-                    O E-commerce envia um request para o Store, via POST para o
-                    endpoint /sell, com os seguintes parâmetros:
-                        - product – id do produto a ser comprado
-                    A resposta deve conter um id único da transação (gerado automaticamente) que
-                    representa essa venda.
-            '''
-            transaction_id = ft_make_purchase(product_id)
-
-            '''
-                Request 4:
-                    O E-commerce envia um request para o Fidelity, via POST para o endpoint /bonus, com os seguintes parâmetros:
-                        - user – id do usuário que está executando a compra
-                        - bonus – um valor inteiro mais próximo do valor do
-                        produto antes da conversão
-                    A resposta deve indicar o sucesso da operação (HTTP Responde Code).
-            '''
-            bonus = ft_send_bonus(user_id, product_data['value'])
-            
-            return jsonify({
-                'status': 'success',
-                'product':product_data,
-                'exchange_rate': exchange_rate,
-                'exchange_value': product_exchange_value,
-                'transaction_id': transaction_id,
-                'bonus': bonus
-            }), 200
+        seek_product = ft_seek_product(product_id)
+        if seek_product['status_code'] == 200:
+            product_data = seek_product['product']
         else:
             return jsonify({
                 'status':'error',
-                'message': 'Product not found'
-            }), 404
+                'message': seek_product['message']
+            }), seek_product['status_code'] 
+
+       
+        #Calcular o preço convertido
+        '''
+            Request 2:
+                O E-commerce envia um request para o Exchange, via GET para o
+                endpoint /exchange, sem parâmetros. 
+                A resposta deve ser um número real positivo que indica a taxa
+                de conversão da moeda.       
+        '''
+        exchange_rate = ft_get_exchange()
+        product_exchange_value = round(float(product_data['value'])*exchange_rate, 2) # Converte para BRL
+        '''
+            Request 3:
+                O E-commerce envia um request para o Store, via POST para o
+                endpoint /sell, com os seguintes parâmetros:
+                    - product – id do produto a ser comprado
+                A resposta deve conter um id único da transação (gerado automaticamente) que
+                representa essa venda.
+        '''
+        make_purchase = ft_make_purchase(product_id)
+        if make_purchase['status_code'] == 200:
+            transaction_id = make_purchase['transaction_id']
+        else:
+            return jsonify({
+                'status':'error',
+                'message': make_purchase['message']
+            }), make_purchase['status_code']
+
+        '''
+            Request 4:
+                O E-commerce envia um request para o Fidelity, via POST para o endpoint /bonus, com os seguintes parâmetros:
+                    - user – id do usuário que está executando a compra
+                    - bonus – um valor inteiro mais próximo do valor do
+                    produto antes da conversão
+                A resposta deve indicar o sucesso da operação (HTTP Responde Code).
+        '''
+        send_bonus = ft_send_bonus(user_id, product_data['value'])
+        if send_bonus['status_code'] == 200:
+            bonus = send_bonus['bonus']
+        else:
+            return jsonify({
+                'status':'error',
+                'message': send_bonus['message']
+            }), send_bonus['status_code']
+
+        return jsonify({
+            'status': 'success',
+            'product':product_data,
+            'exchange_rate': exchange_rate,
+            'exchange_value': product_exchange_value,
+            'transaction_id': transaction_id,
+            'bonus': bonus
+        }), 200
     else:
         # No Fault Tolerance
         product_data = noft_seek_product(product_id)

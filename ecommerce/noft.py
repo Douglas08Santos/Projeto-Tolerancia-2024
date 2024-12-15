@@ -6,7 +6,7 @@ def noft_seek_product(product_id):
     return response.json()
 
 def noft_get_exchange():
-    response = requests.get('http://exchange1:5011/exchange') # colocar num try-catch
+    response = requests.get('http://exchange1:5002/exchange')
     data = response.json()
     return data['exchange_rate']
 

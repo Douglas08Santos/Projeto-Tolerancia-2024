@@ -11,7 +11,20 @@ services:
       - exchange2
       - store
       - fidelity
-
+  
+  subscribe_fidelity:
+    build: .
+    container_name: subscribe_fidelity
+    depends_on:
+      - rabbitmq
+      
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # Conexão com o RabbitMQ
+      - "15672:15672" # Interface web do RabbitMQ
+  
   store:
     build: ./store
     container_name: store

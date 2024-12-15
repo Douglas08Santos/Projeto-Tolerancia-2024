@@ -32,7 +32,7 @@ def sell():
         #Gera um id para a transação de compra
         transaction_id = str(uuid.uuid4())
         products[int(product_id)]['stock'] -= 1
-        return jsonify({'transaction_id': transaction_id})
+        return jsonify({'transaction_id': transaction_id}), 200
     else:
         '''
             409 Conflict
