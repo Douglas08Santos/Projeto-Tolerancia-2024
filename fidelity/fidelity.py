@@ -1,3 +1,5 @@
+import random
+import time
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
@@ -6,6 +8,12 @@ server_bonus = {}
 
 @app.route('/bonus', methods=['POST'])
 def add_bonus():
+    # Simular falha de 'Timeout', com taxa de 10%, durante 30s
+    if random.random() < 0.1:
+        time.sleep(30)
+        return jsonify({'message':'Timeout'}), 404
+    
+    
     data = request.json
     user_id = data.get('user')
     bonus = 0.92*float(data.get('bonus')) # 92%

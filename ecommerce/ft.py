@@ -1,7 +1,9 @@
 from email import message
 import json
+import random
 import time
 from urllib import response
+import docker
 from flask import jsonify
 import pika
 import requests
@@ -34,9 +36,13 @@ def ft_seek_product(product_id):
             }
     
 def ft_get_exchange():
-    global latest_usd_exchange_rate
+   
     # tentando em exchange1
     try:
+         # Simular falha de 'Stop', com taxa de 10%, o exchange1 será parado
+        if random.random() < 0.1:
+            raise requests.exceptions.ConnectionError
+        
         response = requests.get('http://exchange1:5002/exchange')
         if response.status_code == 200:
             data = response.json()
@@ -44,7 +50,7 @@ def ft_get_exchange():
             print('exchange1 OK')
             return latest_usd_exchange_rate
         # implementar um catch para tratar a exceção (log)
-    except requests.exceptions.RequestException:
+    except requests.exceptions.ConnectionError:
         pass
 
     # se exchange1 falhar, o exchange2 será solicitado
@@ -99,7 +105,7 @@ def ft_send_bonus(user_id, bonus):
                 'status_code': response.status_code
             }
     except Exception as e:
-        #pub_message({"user": user_id, "bonus":bonus})
+        pub_message({"user": user_id, "bonus":bonus})
         return {
             'message': 'Failed to send bonus, added to queue',
             'status_code': 503

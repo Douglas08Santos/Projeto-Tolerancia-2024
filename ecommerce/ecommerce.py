@@ -76,10 +76,12 @@ def buy():
             bonus = send_bonus['bonus']
             amount_bonus = send_bonus['amount_bonus']
         else:
-            return jsonify({
-                'status':'error',
-                'message': send_bonus['message']
-            }), send_bonus['status_code']
+            bonus = ''
+            amount_bonus = ''
+            #return jsonify({
+            #    'status':'error',
+            #    'message': send_bonus['message']
+            #}), send_bonus['status_code']
 
         return jsonify({
             'status': 'success',

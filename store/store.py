@@ -1,3 +1,5 @@
+import random
+import time
 from flask import Flask, request, jsonify
 import uuid
 
@@ -5,14 +7,18 @@ app = Flask(__name__)
 
 # Exemplos de produtos do estoque
 products = {
-    1:{'id':1, 'name':'Product A', 'value': 100.0, 'stock': 5}, # Value USD
-    2:{'id':2, 'name':'Product B', 'value': 200.0, 'stock': 0},
-    3:{'id':3, 'name':'Product C', 'value': 300.0, 'stock': 5}  
+    1:{'id':1, 'name':'Product A', 'value': 100.0, 'stock': 10}, # Value USD
+    2:{'id':2, 'name':'Product B', 'value': 200.0, 'stock': 10},
+    3:{'id':3, 'name':'Product C', 'value': 300.0, 'stock': 10}  
 }
 
 @app.route('/product', methods=['GET'])
 def get_product():
-    # Captura do parâmetros enviado pelo request
+    # Simular falha de 'Omission', com taxa de 20%
+    if random.random() < 0.2:
+        return jsonify({'message':'Omission'}), 404
+    
+    # Captura do parâmetros enviado pelo request'Product not found'
     product_id = request.args.get('product')
 
     #Validação ser o id é valido e se existe na lista de produtos
@@ -24,6 +30,11 @@ def get_product():
     
 @app.route('/sell', methods=['POST'])
 def sell():
+    # Simular falha de 'Error', com taxa de 10%, durante 5s
+    if random.random() < 0.1:
+        time.sleep(5)
+        return jsonify({'message':'Error'}), 404
+    
     data = request.json
     product_id = data.get('product')
 
