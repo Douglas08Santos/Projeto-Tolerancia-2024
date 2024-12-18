@@ -34,12 +34,16 @@ services:
   exchange1:
     build: ./exchange
     container_name: exchange1
+    environment:
+      - SERVICE_NAME=exchange1
     ports:
       - "5011:5002"
   
   exchange2:
     build: ./exchange
     container_name: exchange2
+    environment:
+      - SERVICE_NAME=exchange2
     ports:
       - "5012:5002"
 
@@ -55,7 +59,7 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - exchange1
       - exchange2

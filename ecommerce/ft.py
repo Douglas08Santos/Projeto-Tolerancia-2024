@@ -44,7 +44,7 @@ def ft_get_exchange():
         if random.random() < 0.1:
             raise requests.exceptions.ConnectionError
         
-        response = requests.get('http://nginx/exchange')
+        response = requests.get('http://nginx:80/exchange')
         if response.status_code == 200:
             data = response.json()
             latest_usd_exchange_rate = data['exchange_rate']
@@ -56,7 +56,7 @@ def ft_get_exchange():
 
     # se exchange1 falhar, o exchange2 será solicitado
     try:
-        response = requests.get('http://nginx/exchange')
+        response = requests.get('http://nginx:80/exchange')
         if response.status_code == 200:
             data = response.json()
             latest_usd_exchange_rate = data['exchange_rate']
