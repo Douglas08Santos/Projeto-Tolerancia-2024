@@ -34,7 +34,8 @@ def ft_seek_product(product_id):
                 'message': 'Service Unavailable', 
                 'status_code': 503
             }
-    
+#keep alived
+# Balanceador de carga
 def ft_get_exchange():
    
     # tentando em exchange1

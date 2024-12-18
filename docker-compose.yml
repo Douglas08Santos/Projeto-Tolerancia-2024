@@ -12,7 +12,14 @@ services:
       - store
       - fidelity
       - rabbitmq
-      
+
+  #subscribe_fidelity:
+  #  build: .
+  #  container_name: subscribe_fidelity
+  #  depends_on:
+  #    - rabbitmq
+  #    - fidelity
+
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
