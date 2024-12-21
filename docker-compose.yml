@@ -1,4 +1,6 @@
 version: '3.8'
+networks:
+  default: {external: true, name: 'tolerancia'}
 
 services:
   ecommerce:
@@ -12,12 +14,12 @@ services:
       - fidelity
       - rabbitmq
 
-  #subscribe_fidelity:
-  #  build: .
-  #  container_name: subscribe_fidelity
-  #  depends_on:
-  #    - rabbitmq
-  #    - fidelity
+  subscribe_fidelity:
+    build: ./subscribe_fidelity
+    container_name: subscribe_fidelity
+    depends_on:
+      - rabbitmq
+      - fidelity
 
   rabbitmq:
     image: rabbitmq:management
@@ -25,6 +27,7 @@ services:
     ports:
       - "5672:5672" # Conexão com o RabbitMQ
       - "15672:15672" # Interface web do RabbitMQ
+  
   store:
     build: ./store
     container_name: store

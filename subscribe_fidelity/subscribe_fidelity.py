@@ -6,8 +6,10 @@ import pika
 import requests
 
 # Não sei porque raios funciona passando o IP do container, mas não o DNS
-RABBITMQ_HOST = '172.19.0.3'
-FIDELITY_HOST = '172.19.0.6'
+RABBITMQ_HOST = docker.from_env().containers.get('rabbitmq').attrs['NetworkSettings']['Networks']['tolerancia']['IPAddress']
+#RABBITMQ_HOST = '172.23.0.5'
+FIDELITY_HOST = docker.from_env().containers.get('fidelity').attrs['NetworkSettings']['Networks']['tolerancia']['IPAddress']
+#FIDELITY_HOST = '172.23.0.4'
 
 def process_message(ch, method, properties, body):
     message = json.loads(body)

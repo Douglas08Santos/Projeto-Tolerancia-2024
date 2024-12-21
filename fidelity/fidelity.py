@@ -11,7 +11,7 @@ def add_bonus():
     # Simular falha de 'Timeout', com taxa de 10%, durante 30s
     if random.random() < 0.1:
         time.sleep(30)
-        return jsonify({'message':'Timeout'}), 404
+        return jsonify({'message':'Timeout'}), 408
     
     
     data = request.json

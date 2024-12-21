@@ -16,8 +16,8 @@ products = {
 def get_product():
     # Simular falha de 'Omission', com taxa de 20%
     if random.random() < 0.2:
-        time.sleep(30)
-        return jsonify({'message':'Omission'}), 404
+        time.sleep(5)
+        return jsonify({'message':'Omission'}), 408
     
     # Captura do parâmetros enviado pelo request'Product not found'
     product_id = request.args.get('product')

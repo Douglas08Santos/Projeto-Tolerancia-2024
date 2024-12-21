@@ -26,7 +26,7 @@ def ft_seek_product(product_id):
             } 
         else:
             return {
-                'message': response.json()['message'], # not found 404
+                'message': response.json()['message'],
                 'status_code': response.status_code
             }
     except requests.exceptions.RequestException:
@@ -100,11 +100,8 @@ def ft_send_bonus(user_id, bonus):
                 'amount_bonus': response.json()['amount_bonus'],
                 'status_code': response.status_code
             }  
-        else: 
-            return {
-                'message': response.json()['message'],
-                'status_code': response.status_code
-            }
+        else:
+            raise Exception 
     except Exception as e:
         pub_message({"user": user_id, "bonus":bonus})
         return {
