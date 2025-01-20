@@ -1,5 +1,12 @@
 # Projeto-Tolerancia-2024
 
+## Como rodar
+
+- Requisitos
+  - Docker
+  - Python (>= 3.11)
+  
+
 ## Tecnologias Utilizadas
 - Python
 - Docker

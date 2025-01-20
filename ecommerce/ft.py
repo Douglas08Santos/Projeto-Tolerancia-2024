@@ -27,12 +27,12 @@ def ft_seek_product(product_id):
         else:
             return {
                 'message': response.json()['message'],
-                'status_code': response.status_code
+                'status_code': response.status_code # 404
             }
     except requests.exceptions.RequestException:
         return {
                 'message': 'Service Unavailable', 
-                'status_code': 503
+                'status_code': 503 # Store is down
             }
 #keep alived
 # Balanceador de carga
